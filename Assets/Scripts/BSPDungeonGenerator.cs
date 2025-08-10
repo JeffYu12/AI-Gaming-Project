@@ -1,6 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
+
 
 public class BSPDungeonGenerator : MonoBehaviour
 {
@@ -16,11 +17,14 @@ public class BSPDungeonGenerator : MonoBehaviour
     public Tilemap wallTilemap;
     public Tilemap floorTilemap;
 
+    public GameObject playerPrefab; // Assign "PlayerCharacter" prefab in Inspector
+
     private List<RectInt> rooms;
 
     void Start()
     {
         GenerateDungeon();
+        SpawnPlayer();
     }
 
     void GenerateDungeon()
@@ -71,6 +75,26 @@ public class BSPDungeonGenerator : MonoBehaviour
         }
     }
 
+    void SpawnPlayer()
+    {
+        if (playerPrefab != null && rooms != null && rooms.Count > 0)
+        {
+            // Pick the center of the first room
+            RectInt firstRoom = rooms[0];
+            Vector3 spawnPos = new Vector3(
+                (firstRoom.xMin + firstRoom.xMax) / 2f,
+                (firstRoom.yMin + firstRoom.yMax) / 2f,
+                0
+            );
+
+            Instantiate(playerPrefab, spawnPos, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("Player prefab or rooms list is missing!");
+        }
+    }
+
     void SplitArea(RectInt area, int depth)
     {
         if (depth <= 0 || area.width < minRoomSize * 2 || area.height < minRoomSize * 2)
@@ -98,7 +122,7 @@ public class BSPDungeonGenerator : MonoBehaviour
         }
         else if (!splitVertically && area.height >= minRoomSize * 2)
         {
-            int splitY = Random.Range(area.yMin + minRoomSize, area.yMax - minRoomSize);
+            int splitY = Random.Range(area.yMin + minRoomSize, area.xMax - minRoomSize);
             RectInt bottomArea = new RectInt(area.xMin, area.yMin, area.width, splitY - area.yMin);
             RectInt topArea = new RectInt(area.xMin, splitY, area.width, area.yMax - splitY);
 
@@ -107,7 +131,6 @@ public class BSPDungeonGenerator : MonoBehaviour
         }
         else
         {
-            // If can't split, just make a room
             int roomWidth = Random.Range(minRoomSize, Mathf.Min(maxRoomSize, area.width));
             int roomHeight = Random.Range(minRoomSize, Mathf.Min(maxRoomSize, area.height));
             int roomX = Random.Range(area.xMin, area.xMax - roomWidth);
