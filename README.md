@@ -16,4 +16,4 @@ Setup Instructions
 Notes
 
     No borders are currently implemented, so the player and enemies can leave the room area.
-    Player Healthbar does not display properly/
+    Player Healthbar does not display properly
