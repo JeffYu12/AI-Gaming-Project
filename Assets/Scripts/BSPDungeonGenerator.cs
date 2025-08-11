@@ -2,7 +2,6 @@
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
-
 public class BSPDungeonGenerator : MonoBehaviour
 {
     public int mapWidth = 50;
@@ -17,19 +16,19 @@ public class BSPDungeonGenerator : MonoBehaviour
     public Tilemap wallTilemap;
     public Tilemap floorTilemap;
 
-    public GameObject playerPrefab; // Assign "PlayerCharacter" prefab in Inspector
+    public GameObject playerPrefab; // Assign your Player prefab in Inspector
 
     private List<RectInt> rooms;
 
     void Start()
     {
         GenerateDungeon();
-        SpawnPlayer();
+   
     }
 
     void GenerateDungeon()
     {
-        // Fill the map with walls first
+        // Fill the entire map with walls first at Z = 0
         for (int x = 0; x < mapWidth; x++)
         {
             for (int y = 0; y < mapHeight; y++)
@@ -41,11 +40,11 @@ public class BSPDungeonGenerator : MonoBehaviour
 
         rooms = new List<RectInt>();
 
-        // Start BSP split from full map
+        // Start BSP splitting from full map area
         RectInt rootArea = new RectInt(1, 1, mapWidth - 2, mapHeight - 2);
         SplitArea(rootArea, maxSplits);
 
-        // Dig out rooms
+        // Carve out rooms and set floor tiles at Z = 0
         foreach (var room in rooms)
         {
             for (int x = room.xMin; x < room.xMax; x++)
@@ -58,7 +57,7 @@ public class BSPDungeonGenerator : MonoBehaviour
             }
         }
 
-        // Connect rooms with corridors
+        // Connect rooms with corridors at Z = 0
         for (int i = 0; i < rooms.Count - 1; i++)
         {
             Vector2Int roomCenter1 = new Vector2Int(
@@ -79,12 +78,12 @@ public class BSPDungeonGenerator : MonoBehaviour
     {
         if (playerPrefab != null && rooms != null && rooms.Count > 0)
         {
-            // Pick the center of the first room
+            // Spawn player at center of first room at Z = -1 to render on top
             RectInt firstRoom = rooms[0];
             Vector3 spawnPos = new Vector3(
                 (firstRoom.xMin + firstRoom.xMax) / 2f,
                 (firstRoom.yMin + firstRoom.yMax) / 2f,
-                0
+                -1f  // Player Z is smaller so it's drawn in front
             );
 
             Instantiate(playerPrefab, spawnPos, Quaternion.identity);
@@ -99,7 +98,6 @@ public class BSPDungeonGenerator : MonoBehaviour
     {
         if (depth <= 0 || area.width < minRoomSize * 2 || area.height < minRoomSize * 2)
         {
-            // Make a room inside this area
             int roomWidth = Random.Range(minRoomSize, Mathf.Min(maxRoomSize, area.width));
             int roomHeight = Random.Range(minRoomSize, Mathf.Min(maxRoomSize, area.height));
             int roomX = Random.Range(area.xMin, area.xMax - roomWidth);
@@ -122,7 +120,7 @@ public class BSPDungeonGenerator : MonoBehaviour
         }
         else if (!splitVertically && area.height >= minRoomSize * 2)
         {
-            int splitY = Random.Range(area.yMin + minRoomSize, area.xMax - minRoomSize);
+            int splitY = Random.Range(area.yMin + minRoomSize, area.yMax - minRoomSize);
             RectInt bottomArea = new RectInt(area.xMin, area.yMin, area.width, splitY - area.yMin);
             RectInt topArea = new RectInt(area.xMin, splitY, area.width, area.yMax - splitY);
 
