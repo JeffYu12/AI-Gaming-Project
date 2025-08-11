@@ -4,9 +4,9 @@ A top-down shooter where the player navigates through procedurally generated dun
 
 Game Controls
 
-WASD / Arrow Keys – Move player
-Mouse – Aim 
-Left Click - Fire Projectile
+    WASD / Arrow Keys – Move player
+    Mouse – Aim 
+    Left Click - Fire Projectile
     
 Setup Instructions
 
