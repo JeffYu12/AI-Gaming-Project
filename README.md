@@ -1,6 +1,6 @@
 Game Overview
 
-A top-down shooter where the player navigates through procedurally generated dungeon rooms and fights enemies
+A top-down shooter where the player navigates through procedurally generated dungeon rooms and fights enemies. The objective is to find the door.
 
 Game Controls
 
