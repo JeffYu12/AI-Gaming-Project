@@ -11,7 +11,7 @@ Game Controls
 Setup Instructions
 
     1.Download or clone the project
-    2.Open in your game engine and run level1_save from assets/scenes
+    2.Open in your game engine and run level1_save from assets/scenes or the executable Game/Ai for Gaming
 
 Notes
 
