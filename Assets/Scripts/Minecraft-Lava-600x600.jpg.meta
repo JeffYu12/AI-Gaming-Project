@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Minecraft-Lava-600x600_0: -3412757013396157168
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
